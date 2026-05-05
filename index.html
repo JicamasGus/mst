@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTrack Pro · Firebase</title>
+    <title>WorkTrack Pro · Firebase Auth</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -28,124 +28,234 @@
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'Segoe UI', system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); line-height:1.6; min-height:100vh; }
+
+        /* ─── PANTALLA DE LOGIN ──────────────── */
+        .auth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            background: linear-gradient(135deg, #1e3a5f 0%, #1a2d47 100%);
+        }
+        .auth-card {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 2.5rem 2rem;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+        .auth-card .logo-auth {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .auth-card h2 {
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+        .auth-form .form-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+        .auth-form label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        .auth-form input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        .auth-form input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74,108,247,0.1);
+        }
+        .auth-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 0.5rem;
+        }
+        .auth-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        .auth-toggle {
+            margin-top: 1.2rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        .auth-toggle a {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .auth-error {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        /* ─── HEADER Y APP (ocultos inicialmente) ─ */
+        .app-container {
+            display: none;
+        }
         .header { background:linear-gradient(135deg, #1e3a5f 0%, #1a2d47 100%); color:#fff; padding:1.2rem 2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; box-shadow:0 4px 20px rgba(0,0,0,0.15); position:sticky; top:0; z-index:100; }
-        .header .logo { display:flex; align-items:center; gap:0.6rem; font-size:1.4rem; font-weight:700; letter-spacing:-0.3px; }
+        .header .logo { display:flex; align-items:center; gap:0.6rem; font-size:1.4rem; font-weight:700; }
         .header .logo i { font-size:1.8rem; color:#60a5fa; }
-        .btn { display:inline-flex; align-items:center; gap:0.4rem; padding:0.55rem 1.1rem; border:none; border-radius:var(--radius-sm); font-weight:600; font-size:0.9rem; cursor:pointer; transition:all var(--transition); text-decoration:none; white-space:nowrap; letter-spacing:0.01em; }
+        .btn { display:inline-flex; align-items:center; gap:0.4rem; padding:0.55rem 1.1rem; border:none; border-radius:var(--radius-sm); font-weight:600; font-size:0.9rem; cursor:pointer; transition:all var(--transition); text-decoration:none; white-space:nowrap; }
         .btn-primary { background:var(--primary); color:#fff; } .btn-primary:hover { background:var(--primary-dark); transform:translateY(-1px); box-shadow:var(--shadow); }
-        .btn-whatsapp { background:var(--whatsapp); color:#fff; } .btn-whatsapp:hover { background:var(--whatsapp-dark); transform:translateY(-1px); box-shadow:var(--shadow); }
-        .btn-outline { background:transparent; border:2px solid rgba(255,255,255,0.5); color:#fff; } .btn-outline:hover { background:rgba(255,255,255,0.1); border-color:#fff; }
-        .btn-sm { padding:0.4rem 0.7rem; font-size:0.78rem; border-radius:6px; } .btn-xs { padding:0.3rem 0.55rem; font-size:0.7rem; border-radius:5px; }
-        .btn-success { background:var(--success); color:#fff; } .btn-success:hover { filter:brightness(1.1); }
-        .btn-warning { background:var(--warning); color:#1e293b; } .btn-warning:hover { filter:brightness(1.1); }
-        .btn-danger { background:var(--danger); color:#fff; } .btn-danger:hover { filter:brightness(1.1); }
+        .btn-whatsapp { background:var(--whatsapp); color:#fff; } .btn-whatsapp:hover { background:var(--whatsapp-dark); }
+        .btn-outline { background:transparent; border:2px solid rgba(255,255,255,0.5); color:#fff; } .btn-outline:hover { background:rgba(255,255,255,0.1); }
+        .btn-sm { padding:0.4rem 0.7rem; font-size:0.78rem; border-radius:6px; } .btn-xs { padding:0.3rem 0.55rem; font-size:0.7rem; }
+        .btn-success { background:var(--success); color:#fff; } .btn-warning { background:var(--warning); color:#1e293b; } .btn-danger { background:var(--danger); color:#fff; }
         .btn-ghost { background:transparent; color:var(--text-light); } .btn-ghost:hover { background:#f1f5f9; color:var(--text); }
         .container { max-width:1300px; margin:0 auto; padding:1.5rem; }
         .stats-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:1rem; margin-bottom:1.5rem; }
-        .stat-card { background:var(--surface); border-radius:var(--radius); padding:1.2rem 1.4rem; box-shadow:var(--shadow-sm); display:flex; align-items:center; gap:1rem; transition:all var(--transition); border:1px solid var(--border); }
-        .stat-card:hover { box-shadow:var(--shadow); transform:translateY(-2px); }
-        .stat-icon { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+        .stat-card { background:var(--surface); border-radius:var(--radius); padding:1.2rem 1.4rem; box-shadow:var(--shadow-sm); display:flex; align-items:center; gap:1rem; border:1px solid var(--border); }
+        .stat-card:hover { box-shadow:var(--shadow); }
+        .stat-icon { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.3rem; }
         .stat-icon.blue { background:#eff6ff; color:#3b82f6; } .stat-icon.amber { background:#fffbeb; color:#f59e0b; } .stat-icon.green { background:#ecfdf5; color:#10b981; } .stat-icon.whatsapp-bg { background:#e6f9ee; color:#25D366; }
-        .stat-info .stat-value { font-size:1.8rem; font-weight:800; line-height:1; } .stat-info .stat-label { font-size:0.8rem; color:var(--text-light); margin-top:0.2rem; }
+        .stat-info .stat-value { font-size:1.8rem; font-weight:800; } .stat-info .stat-label { font-size:0.8rem; color:var(--text-light); }
         .toolbar { display:flex; gap:0.8rem; flex-wrap:wrap; align-items:center; margin-bottom:1.2rem; background:var(--surface); padding:1rem 1.2rem; border-radius:var(--radius); box-shadow:var(--shadow-sm); border:1px solid var(--border); }
-        .search-box { flex:1; min-width:200px; position:relative; } .search-box input { width:100%; padding:0.6rem 1rem 0.6rem 2.5rem; border:2px solid var(--border); border-radius:25px; font-size:0.9rem; transition:all var(--transition); background:#f8fafc; }
+        .search-box { flex:1; min-width:200px; position:relative; } .search-box input { width:100%; padding:0.6rem 1rem 0.6rem 2.5rem; border:2px solid var(--border); border-radius:25px; font-size:0.9rem; background:#f8fafc; }
         .search-box input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(74,108,247,0.1); background:#fff; }
         .search-box i { position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--text-light); }
-        .filter-btns { display:flex; gap:0.3rem; flex-wrap:wrap; } .filter-btn { padding:0.5rem 1rem; border:2px solid var(--border); background:#fff; border-radius:25px; cursor:pointer; font-size:0.85rem; font-weight:500; transition:all var(--transition); color:var(--text-light); }
-        .filter-btn.active { background:var(--primary); color:#fff; border-color:var(--primary); } .filter-btn:hover:not(.active) { background:#f1f5f9; border-color:#cbd5e1; }
+        .filter-btns { display:flex; gap:0.3rem; flex-wrap:wrap; } .filter-btn { padding:0.5rem 1rem; border:2px solid var(--border); background:#fff; border-radius:25px; cursor:pointer; font-size:0.85rem; transition:var(--transition); color:var(--text-light); }
+        .filter-btn.active { background:var(--primary); color:#fff; border-color:var(--primary); }
         .table-container { background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow-sm); overflow:hidden; border:1px solid var(--border); }
         .table-wrapper { overflow-x:auto; } table { width:100%; border-collapse:collapse; min-width:900px; }
-        thead th { background:#f8fafc; padding:0.9rem 1rem; text-align:left; font-weight:700; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-light); border-bottom:2px solid var(--border); }
-        tbody td { padding:0.8rem 1rem; border-bottom:1px solid var(--border); font-size:0.9rem; vertical-align:middle; }
-        tbody tr:hover { background:#f8fafc; } tbody tr:last-child td { border-bottom:none; }
+        thead th { background:#f8fafc; padding:0.9rem 1rem; text-align:left; font-weight:700; font-size:0.78rem; text-transform:uppercase; color:var(--text-light); border-bottom:2px solid var(--border); }
+        tbody td { padding:0.8rem 1rem; border-bottom:1px solid var(--border); font-size:0.9rem; }
+        tbody tr:hover { background:#f8fafc; }
         .badge { display:inline-block; padding:0.3rem 0.7rem; border-radius:20px; font-size:0.75rem; font-weight:600; }
         .badge-pendiente { background:#fef3c7; color:#92400e; } .badge-progreso { background:#dbeafe; color:#1e40af; } .badge-completado { background:#d1fae5; color:#065f46; }
-        .actions-cell { display:flex; gap:0.3rem; flex-wrap:wrap; align-items:center; }
-        .client-name { font-weight:600; } .client-phone { font-size:0.8rem; color:var(--text-light); }
-        .empty-state { text-align:center; padding:4rem 2rem; color:var(--text-light); } .empty-state i { font-size:4rem; display:block; margin-bottom:1rem; opacity:0.4; }
-        .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:999; display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden; transition:all 0.25s ease; padding:1rem; }
-        .modal-overlay.active { opacity:1; visibility:visible; } .modal { background:#fff; border-radius:var(--radius); width:100%; max-width:600px; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-lg); transform:translateY(20px) scale(0.97); transition:all 0.25s ease; }
-        .modal-overlay.active .modal { transform:translateY(0) scale(1); } .modal-header { display:flex; align-items:center; justify-content:space-between; padding:1.2rem 1.5rem; border-bottom:1px solid var(--border); position:sticky; top:0; background:#fff; z-index:10; border-radius:var(--radius) var(--radius) 0 0; }
-        .modal-header h3 { font-size:1.2rem; font-weight:700; } .modal-close { width:36px; height:36px; border-radius:50%; border:none; background:#f1f5f9; cursor:pointer; font-size:1rem; transition:all var(--transition); display:flex; align-items:center; justify-content:center; }
-        .modal-close:hover { background:#e2e8f0; } .modal-body { padding:1.5rem; } .form-group { margin-bottom:1.2rem; } .form-group label { display:block; font-weight:600; margin-bottom:0.35rem; font-size:0.85rem; }
-        .form-group input, .form-group textarea, .form-group select { width:100%; padding:0.65rem 0.9rem; border:2px solid var(--border); border-radius:var(--radius-sm); font-size:0.9rem; font-family:inherit; transition:all var(--transition); background:#f8fafc; }
+        .actions-cell { display:flex; gap:0.3rem; flex-wrap:wrap; }
+        .empty-state { text-align:center; padding:4rem 2rem; color:var(--text-light); }
+        .empty-state i { font-size:4rem; display:block; margin-bottom:1rem; opacity:0.4; }
+        .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:999; display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden; transition:0.25s; padding:1rem; }
+        .modal-overlay.active { opacity:1; visibility:visible; } .modal { background:#fff; border-radius:var(--radius); width:100%; max-width:600px; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-lg); transform:translateY(20px) scale(0.97); transition:0.25s; }
+        .modal-overlay.active .modal { transform:translateY(0) scale(1); } .modal-header { display:flex; align-items:center; justify-content:space-between; padding:1.2rem 1.5rem; border-bottom:1px solid var(--border); background:#fff; border-radius:var(--radius) var(--radius) 0 0; }
+        .modal-close { width:36px; height:36px; border-radius:50%; border:none; background:#f1f5f9; cursor:pointer; } .modal-body { padding:1.5rem; } .form-group { margin-bottom:1.2rem; } .form-group label { display:block; font-weight:600; margin-bottom:0.35rem; font-size:0.85rem; }
+        .form-group input, .form-group textarea, .form-group select { width:100%; padding:0.65rem 0.9rem; border:2px solid var(--border); border-radius:var(--radius-sm); font-size:0.9rem; background:#f8fafc; }
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(74,108,247,0.08); background:#fff; }
-        .form-group textarea { resize:vertical; min-height:70px; } .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
-        .form-hint { font-size:0.75rem; color:var(--text-light); margin-top:0.25rem; } .modal-footer { padding:1rem 1.5rem; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:0.6rem; position:sticky; bottom:0; background:#fff; border-radius:0 0 var(--radius) var(--radius); }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; } .form-hint { font-size:0.75rem; color:var(--text-light); } .modal-footer { padding:1rem 1.5rem; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:0.6rem; }
         .toast-container { position:fixed; top:1.5rem; right:1.5rem; z-index:2000; display:flex; flex-direction:column; gap:0.5rem; }
         .toast { background:#1e293b; color:#fff; padding:1rem 1.3rem; border-radius:var(--radius-sm); box-shadow:var(--shadow-lg); font-weight:500; font-size:0.9rem; animation:slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards; max-width:400px; display:flex; align-items:center; gap:0.6rem; }
         .toast.success { background:#059669; } .toast.warning { background:#d97706; } .toast.info { background:#3b82f6; }
         @keyframes slideIn { from { transform:translateX(120%); opacity:0; } to { transform:translateX(0); opacity:1; } }
         @keyframes fadeOut { from { opacity:1; } to { opacity:0; transform:translateY(-10px); } }
         .reminder-alert { position:fixed; bottom:2rem; right:2rem; background:#fff; border-left:5px solid #25D366; border-radius:var(--radius); padding:1.2rem 1.5rem; box-shadow:var(--shadow-lg); z-index:1500; max-width:420px; animation:bounceIn 0.4s ease; display:flex; gap:1rem; align-items:flex-start; }
-        .reminder-alert .reminder-icon { font-size:2rem; color:#25D366; flex-shrink:0; } .reminder-content h4 { margin-bottom:0.3rem; } .reminder-content p { font-size:0.85rem; color:var(--text-light); margin-bottom:0.8rem; } .reminder-actions { display:flex; gap:0.5rem; }
+        .reminder-icon { font-size:2rem; color:#25D366; flex-shrink:0; } .reminder-content h4 { margin-bottom:0.3rem; }
         @keyframes bounceIn { 0%{ transform:translateY(100px) scale(0.8); opacity:0; } 60%{ transform:translateY(-10px) scale(1.02); opacity:1; } 100%{ transform:translateY(0) scale(1); opacity:1; } }
-        @media (max-width:768px) { .header { padding:1rem; } .container { padding:0.8rem; } .toolbar { flex-direction:column; align-items:stretch; } .form-row { grid-template-columns:1fr; } .stats-row { grid-template-columns:repeat(2,1fr); } }
+        @media (max-width:768px) { .header { padding:1rem; } .container { padding:0.8rem; } .toolbar { flex-direction:column; align-items:stretch; } .form-row { grid-template-columns:1fr; } }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="logo"><i class="fas fa-tasks"></i><span>WorkTrack Pro</span></div>
-        <div class="header-actions">
-            <button class="btn btn-outline btn-sm" onclick="exportarDatos()"><i class="fas fa-download"></i> Exportar</button>
-            <button class="btn btn-outline btn-sm" onclick="importarDatos()"><i class="fas fa-upload"></i> Importar</button>
-            <button class="btn btn-whatsapp btn-sm" onclick="whatsappMasivo()"><i class="fab fa-whatsapp"></i> Masivo</button>
-            <button class="btn btn-primary" onclick="abrirModal()"><i class="fas fa-plus"></i> Nuevo Trabajo</button>
+    <!-- ─── PANTALLA DE AUTENTICACIÓN ──────────── -->
+    <div id="authScreen" class="auth-container">
+        <div class="auth-card">
+            <div class="logo-auth"><i class="fas fa-tasks"></i></div>
+            <h2 id="authTitle">Iniciar sesión</h2>
+            <form class="auth-form" id="authForm">
+                <div class="form-group">
+                    <label>Correo electrónico</label>
+                    <input type="email" id="email" placeholder="tu@correo.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                </div>
+                <div class="auth-error" id="authError"></div>
+                <button type="submit" class="auth-btn" id="authBtn">Entrar</button>
+            </form>
+            <p class="auth-toggle">
+                <span id="toggleText">¿No tienes cuenta?</span> <a id="toggleLink" onclick="toggleAuthMode()">Regístrate aquí</a>
+            </p>
         </div>
-    </header>
+    </div>
 
-    <main class="container">
-        <div class="stats-row">
-            <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-briefcase"></i></div><div class="stat-info"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total trabajos</div></div></div>
-            <div class="stat-card"><div class="stat-icon amber"><i class="fas fa-clock"></i></div><div class="stat-info"><div class="stat-value" id="statPendientes">0</div><div class="stat-label">Pendientes</div></div></div>
-            <div class="stat-card"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div><div class="stat-info"><div class="stat-value" id="statCompletados">0</div><div class="stat-label">Completados</div></div></div>
-            <div class="stat-card"><div class="stat-icon whatsapp-bg"><i class="fab fa-whatsapp"></i></div><div class="stat-info"><div class="stat-value" id="statRecordatorios">0</div><div class="stat-label">Recordatorios prog.</div></div></div>
-        </div>
-
-        <div class="toolbar">
-            <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Buscar cliente o descripción..." oninput="renderTabla()"></div>
-            <div class="filter-btns">
-                <button class="filter-btn active" data-filter="todos" onclick="setFiltro('todos', this)">Todos</button>
-                <button class="filter-btn" data-filter="pendiente" onclick="setFiltro('pendiente', this)">Pendientes</button>
-                <button class="filter-btn" data-filter="en_progreso" onclick="setFiltro('en_progreso', this)">En progreso</button>
-                <button class="filter-btn" data-filter="completado" onclick="setFiltro('completado', this)">Completados</button>
-                <button class="filter-btn" data-filter="con_recordatorio" onclick="setFiltro('con_recordatorio', this)"><i class="far fa-bell"></i> Con recordatorio</button>
+    <!-- ─── APLICACIÓN PRINCIPAL (oculta) ───────── -->
+    <div id="appScreen" class="app-container">
+        <header class="header">
+            <div class="logo"><i class="fas fa-tasks"></i><span>WorkTrack Pro</span></div>
+            <div class="header-actions">
+                <button class="btn btn-outline btn-sm" onclick="exportarDatos()"><i class="fas fa-download"></i> Exportar</button>
+                <button class="btn btn-outline btn-sm" onclick="importarDatos()"><i class="fas fa-upload"></i> Importar</button>
+                <button class="btn btn-whatsapp btn-sm" onclick="whatsappMasivo()"><i class="fab fa-whatsapp"></i> Masivo</button>
+                <button class="btn btn-primary" onclick="abrirModal()"><i class="fas fa-plus"></i> Nuevo Trabajo</button>
+                <button class="btn btn-ghost btn-sm" onclick="cerrarSesion()" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i> Salir</button>
             </div>
-        </div>
-
-        <div class="table-container">
-            <div class="table-wrapper">
-                <table>
-                    <thead><tr><th>Cliente</th><th>Teléfono</th><th>Descripción</th><th>Fecha trabajo</th><th>Estado</th><th>Recordatorio</th><th>Acciones</th></tr></thead>
-                    <tbody id="tablaBody"><tr><td colspan="7"><div class="empty-state"><i class="far fa-clipboard"></i><p><strong>Conectando con Firebase...</strong></p></div></td></tr></tbody>
-                </table>
+        </header>
+        <main class="container">
+            <div class="stats-row">
+                <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-briefcase"></i></div><div class="stat-info"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total trabajos</div></div></div>
+                <div class="stat-card"><div class="stat-icon amber"><i class="fas fa-clock"></i></div><div class="stat-info"><div class="stat-value" id="statPendientes">0</div><div class="stat-label">Pendientes</div></div></div>
+                <div class="stat-card"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div><div class="stat-info"><div class="stat-value" id="statCompletados">0</div><div class="stat-label">Completados</div></div></div>
+                <div class="stat-card"><div class="stat-icon whatsapp-bg"><i class="fab fa-whatsapp"></i></div><div class="stat-info"><div class="stat-value" id="statRecordatorios">0</div><div class="stat-label">Recordatorios prog.</div></div></div>
             </div>
-        </div>
-    </main>
+            <div class="toolbar">
+                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Buscar cliente o descripción..." oninput="renderTabla()"></div>
+                <div class="filter-btns">
+                    <button class="filter-btn active" data-filter="todos" onclick="setFiltro('todos', this)">Todos</button>
+                    <button class="filter-btn" data-filter="pendiente" onclick="setFiltro('pendiente', this)">Pendientes</button>
+                    <button class="filter-btn" data-filter="en_progreso" onclick="setFiltro('en_progreso', this)">En progreso</button>
+                    <button class="filter-btn" data-filter="completado" onclick="setFiltro('completado', this)">Completados</button>
+                    <button class="filter-btn" data-filter="con_recordatorio" onclick="setFiltro('con_recordatorio', this)"><i class="far fa-bell"></i> Con recordatorio</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>Cliente</th><th>Teléfono</th><th>Descripción</th><th>Fecha trabajo</th><th>Estado</th><th>Recordatorio</th><th>Acciones</th></tr></thead>
+                        <tbody id="tablaBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
 
+    <!-- ─── MODALES Y ELEMENTOS OCULTOS ────────── -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
             <div class="modal-header"><h3 id="modalTitulo">Nuevo Trabajo</h3><button class="modal-close" onclick="cerrarModal()"><i class="fas fa-times"></i></button></div>
             <div class="modal-body">
                 <form id="formTrabajo" onsubmit="guardarTrabajo(event)">
                     <input type="hidden" id="trabajoId">
-                    <div class="form-group"><label>👤 Nombre del cliente *</label><input type="text" id="cliente" placeholder="Ej: Juan Pérez" required></div>
+                    <div class="form-group"><label>👤 Nombre del cliente *</label><input type="text" id="cliente" required></div>
                     <div class="form-row">
-                        <div class="form-group"><label>📱 Teléfono (con código país) *</label><input type="tel" id="telefono" placeholder="+52 123 456 7890" required><div class="form-hint">Para WhatsApp: incluye código de país (ej: +52)</div></div>
-                        <div class="form-group"><label>📅 Fecha del trabajo</label><input type="date" id="fechaTrabajo"></div>
+                        <div class="form-group"><label>📱 Teléfono *</label><input type="tel" id="telefono" required><div class="form-hint">Con código de país (ej: +52)</div></div>
+                        <div class="form-group"><label>📅 Fecha trabajo</label><input type="date" id="fechaTrabajo"></div>
                     </div>
-                    <div class="form-group"><label>📝 Descripción del trabajo *</label><textarea id="descripcion" placeholder="Describe el trabajo a realizar..." required></textarea></div>
+                    <div class="form-group"><label>📝 Descripción *</label><textarea id="descripcion" required></textarea></div>
                     <div class="form-row">
                         <div class="form-group"><label>🏷️ Estado</label><select id="estado"><option value="pendiente">Pendiente</option><option value="en_progreso">En progreso</option><option value="completado">Completado</option></select></div>
-                        <div class="form-group"><label>🔔 Recordatorio programado</label><input type="datetime-local" id="fechaRecordatorio"><div class="form-hint">Opcional: recibirás una alerta en esta fecha/hora</div></div>
+                        <div class="form-group"><label>🔔 Recordatorio</label><input type="datetime-local" id="fechaRecordatorio"></div>
                     </div>
-                    <div class="form-group"><label>🗒️ Notas adicionales</label><textarea id="notas" placeholder="Notas opcionales..." rows="2"></textarea></div>
+                    <div class="form-group"><label>🗒️ Notas</label><textarea id="notas" rows="2"></textarea></div>
                 </form>
             </div>
             <div class="modal-footer"><button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button><button class="btn btn-primary" type="submit" form="formTrabajo"><i class="fas fa-save"></i> Guardar</button></div>
         </div>
     </div>
-
     <div class="toast-container" id="toastContainer"></div>
     <div id="reminderAlertContainer"></div>
     <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="procesarImportacion(event)">
@@ -157,7 +267,7 @@
 
     <script>
         // ⚠️ PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE ⚠️
-              const firebaseConfig = {
+       const firebaseConfig = {
   apiKey: "AIzaSyApCmv-8WzGXtKRDUjO3btMTolGNXHtHPQ",
   authDomain: "multi-bb1eb.firebaseapp.com",
   projectId: "multi-bb1eb",
@@ -166,57 +276,112 @@
   appId: "1:303690432166:web:5c813e1a51c4e217e43e67"
 };
 
-        // Inicializar Firebase
-
-  
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Estado global
         let trabajos = [];
         let filtroActual = 'todos';
         let trabajoEditandoId = null;
         let recordatoriosNotificados = new Set();
-        let unsubscribe = null; // Para la suscripción en tiempo real
+        let unsubscribe = null;
 
-        // ─── AUTENTICACIÓN ANÓNIMA ─────────────────
-        auth.signInAnonymously().catch(error => {
-            mostrarToast('Error de conexión: ' + error.message, 'warning');
-        });
+        // ─── AUTENTICACIÓN ──────────────────────
+        const authScreen = document.getElementById('authScreen');
+        const appScreen = document.getElementById('appScreen');
+        const authForm = document.getElementById('authForm');
+        const authTitle = document.getElementById('authTitle');
+        const authBtn = document.getElementById('authBtn');
+        const toggleLink = document.getElementById('toggleLink');
+        const toggleText = document.getElementById('toggleText');
+        const authError = document.getElementById('authError');
+        let isLogin = true;
 
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                console.log('✅ Usuario anónimo conectado:', user.uid);
-                // Iniciar la escucha de Firestore para este usuario
-                iniciarEscuchaTiempoReal();
+        function toggleAuthMode() {
+            isLogin = !isLogin;
+            if (isLogin) {
+                authTitle.textContent = 'Iniciar sesión';
+                authBtn.textContent = 'Entrar';
+                toggleText.textContent = '¿No tienes cuenta?';
+                toggleLink.textContent = 'Regístrate aquí';
             } else {
-                console.log('🔒 Sin sesión');
-                trabajos = [];
-                renderTabla();
+                authTitle.textContent = 'Crear cuenta';
+                authBtn.textContent = 'Registrarme';
+                toggleText.textContent = '¿Ya tienes cuenta?';
+                toggleLink.textContent = 'Inicia sesión';
+            }
+            authError.style.display = 'none';
+        }
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            authError.style.display = 'none';
+            try {
+                if (isLogin) {
+                    await auth.signInWithEmailAndPassword(email, password);
+                } else {
+                    await auth.createUserWithEmailAndPassword(email, password);
+                }
+            } catch (error) {
+                authError.textContent = traducirError(error.code);
+                authError.style.display = 'block';
             }
         });
 
-        // ─── ESCUCHA EN TIEMPO REAL ─────────────────
-        function iniciarEscuchaTiempoReal() {
-            if (unsubscribe) unsubscribe(); // Limpiar suscripción anterior
+        function traducirError(code) {
+            switch (code) {
+                case 'auth/email-already-in-use': return 'Este correo ya está registrado.';
+                case 'auth/invalid-email': return 'Correo electrónico inválido.';
+                case 'auth/weak-password': return 'La contraseña debe tener al menos 6 caracteres.';
+                case 'auth/user-not-found': return 'Usuario no encontrado.';
+                case 'auth/wrong-password': return 'Contraseña incorrecta.';
+                case 'auth/invalid-credential': return 'Credenciales incorrectas.';
+                default: return 'Error al iniciar sesión. Inténtalo de nuevo.';
+            }
+        }
 
+        async function cerrarSesion() {
+            await auth.signOut();
+            // La interfaz se actualizará con onAuthStateChanged
+        }
+
+        // ─── CAMBIO DE ESTADO DE AUTENTICACIÓN ──
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // Usuario logueado: ocultar pantalla de login y mostrar app
+                authScreen.style.display = 'none';
+                appScreen.style.display = 'block';
+                iniciarEscuchaTiempoReal();
+                console.log('✅ Sesión iniciada:', user.email);
+            } else {
+                // Sin sesión: mostrar login y detener escucha
+                authScreen.style.display = 'flex';
+                appScreen.style.display = 'none';
+                if (unsubscribe) {
+                    unsubscribe();
+                    unsubscribe = null;
+                }
+                trabajos = [];
+                renderTabla();
+                console.log('🔒 Sesión cerrada');
+            }
+        });
+
+        // ─── FIRESTORE EN TIEMPO REAL ──────────
+        function iniciarEscuchaTiempoReal() {
+            if (unsubscribe) unsubscribe();
             const user = auth.currentUser;
             if (!user) return;
-
-            // Cada usuario anónimo tiene su propia subcolección "trabajos" bajo su UID
-            // Usamos una colección raíz "usuarios" > uid > "trabajos"
             const trabajosRef = db.collection('usuarios').doc(user.uid).collection('trabajos');
-
             unsubscribe = trabajosRef.onSnapshot(snapshot => {
                 trabajos = [];
-                snapshot.forEach(doc => {
-                    trabajos.push({ id: doc.id, ...doc.data() });
-                });
+                snapshot.forEach(doc => trabajos.push({ id: doc.id, ...doc.data() }));
                 renderTabla();
-                console.log(`📋 Sincronizados ${trabajos.length} trabajos desde Firestore`);
             }, error => {
-                console.error('Error en la escucha:', error);
+                console.error('Error en Firestore:', error);
                 mostrarToast('Error al sincronizar datos', 'warning');
             });
         }
@@ -227,124 +392,87 @@
             return db.collection('usuarios').doc(user.uid).collection('trabajos');
         }
 
-        // ─── CRUD OPERACIONES ──────────────────────
+        // ─── CRUD ─────────────────────────────
         async function guardarTrabajo(event) {
             event.preventDefault();
             const id = document.getElementById('trabajoId').value;
-            const cliente = document.getElementById('cliente').value.trim();
-            const telefono = document.getElementById('telefono').value.trim();
-            const descripcion = document.getElementById('descripcion').value.trim();
-            const fechaTrabajo = document.getElementById('fechaTrabajo').value;
-            const estado = document.getElementById('estado').value;
-            const fechaRecordatorio = document.getElementById('fechaRecordatorio').value;
-            const notas = document.getElementById('notas').value.trim();
-
-            if (!cliente || !telefono || !descripcion) {
+            const datos = {
+                cliente: document.getElementById('cliente').value.trim(),
+                telefono: document.getElementById('telefono').value.trim(),
+                descripcion: document.getElementById('descripcion').value.trim(),
+                fechaTrabajo: document.getElementById('fechaTrabajo').value || null,
+                estado: document.getElementById('estado').value,
+                fechaRecordatorio: document.getElementById('fechaRecordatorio').value || null,
+                notas: document.getElementById('notas').value.trim(),
+            };
+            if (!datos.cliente || !datos.telefono || !datos.descripcion) {
                 mostrarToast('Completa los campos obligatorios', 'warning');
                 return;
             }
-
-            const trabajoData = {
-                cliente,
-                telefono,
-                descripcion,
-                fechaTrabajo: fechaTrabajo || null,
-                estado,
-                fechaRecordatorio: fechaRecordatorio || null,
-                notas,
-                fechaCreacion: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
             try {
                 if (id) {
-                    // Actualizar existente
-                    await getTrabajosRef().doc(id).update(trabajoData);
+                    await getTrabajosRef().doc(id).update(datos);
                     mostrarToast('Trabajo actualizado', 'success');
-                    if (fechaRecordatorio) recordatoriosNotificados.delete(id);
+                    if (datos.fechaRecordatorio) recordatoriosNotificados.delete(id);
                 } else {
-                    // Crear nuevo
-                    await getTrabajosRef().add(trabajoData);
+                    await getTrabajosRef().add({ ...datos, fechaCreacion: firebase.firestore.FieldValue.serverTimestamp() });
                     mostrarToast('Trabajo creado', 'success');
                 }
                 cerrarModal();
             } catch (error) {
-                mostrarToast('Error al guardar: ' + error.message, 'warning');
+                mostrarToast('Error: ' + error.message, 'warning');
             }
-        }
-
-        function editarTrabajo(id) {
-            abrirModal(id);
         }
 
         async function eliminarTrabajo(id) {
             const trabajo = trabajos.find(t => t.id === id);
             if (!trabajo) return;
-            if (confirm(`¿Eliminar el trabajo de "${trabajo.cliente}"?\n\n${trabajo.descripcion}`)) {
-                try {
-                    await getTrabajosRef().doc(id).delete();
-                    recordatoriosNotificados.delete(id);
-                    mostrarToast('Trabajo eliminado', 'warning');
-                } catch (error) {
-                    mostrarToast('Error al eliminar', 'warning');
-                }
+            if (confirm(`¿Eliminar "${trabajo.cliente}"?`)) {
+                await getTrabajosRef().doc(id).delete();
+                recordatoriosNotificados.delete(id);
+                mostrarToast('Eliminado', 'warning');
             }
         }
 
         async function cambiarEstado(id, nuevoEstado) {
-            const trabajo = trabajos.find(t => t.id === id);
-            if (!trabajo) return;
             const updates = { estado: nuevoEstado };
             if (nuevoEstado === 'completado') {
                 updates.fechaRecordatorio = null;
                 recordatoriosNotificados.delete(id);
             }
-            try {
-                await getTrabajosRef().doc(id).update(updates);
-                const etiquetas = { pendiente: 'Pendiente', en_progreso: 'En progreso', completado: 'Completado' };
-                mostrarToast(`Estado cambiado a "${etiquetas[nuevoEstado]}"`, 'info');
-            } catch (error) {
-                mostrarToast('Error al cambiar estado', 'warning');
-            }
+            await getTrabajosRef().doc(id).update(updates);
+            mostrarToast('Estado actualizado', 'info');
         }
 
-        // ─── MODAL ──────────────────────────────────
+        // ─── MODAL ────────────────────────────
         function abrirModal(id = null) {
             trabajoEditandoId = id;
-            const modal = document.getElementById('modalOverlay');
             document.getElementById('formTrabajo').reset();
             document.getElementById('trabajoId').value = '';
             document.getElementById('fechaRecordatorio').value = '';
             document.getElementById('estado').value = 'pendiente';
-
             if (id) {
-                const trabajo = trabajos.find(t => t.id === id);
-                if (trabajo) {
+                const t = trabajos.find(x => x.id === id);
+                if (t) {
                     document.getElementById('modalTitulo').textContent = 'Editar Trabajo';
-                    document.getElementById('trabajoId').value = trabajo.id;
-                    document.getElementById('cliente').value = trabajo.cliente || '';
-                    document.getElementById('telefono').value = trabajo.telefono || '';
-                    document.getElementById('descripcion').value = trabajo.descripcion || '';
-                    document.getElementById('fechaTrabajo').value = trabajo.fechaTrabajo || '';
-                    document.getElementById('estado').value = trabajo.estado || 'pendiente';
-                    document.getElementById('fechaRecordatorio').value = trabajo.fechaRecordatorio || '';
-                    document.getElementById('notas').value = trabajo.notas || '';
+                    document.getElementById('trabajoId').value = t.id;
+                    document.getElementById('cliente').value = t.cliente;
+                    document.getElementById('telefono').value = t.telefono;
+                    document.getElementById('descripcion').value = t.descripcion;
+                    document.getElementById('fechaTrabajo').value = t.fechaTrabajo || '';
+                    document.getElementById('estado').value = t.estado;
+                    document.getElementById('fechaRecordatorio').value = t.fechaRecordatorio || '';
+                    document.getElementById('notas').value = t.notas || '';
                 }
             } else {
                 document.getElementById('modalTitulo').textContent = 'Nuevo Trabajo';
                 document.getElementById('fechaTrabajo').value = new Date().toISOString().split('T')[0];
             }
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => document.getElementById('cliente').focus(), 200);
+            document.getElementById('modalOverlay').classList.add('active');
         }
+        function cerrarModal() { document.getElementById('modalOverlay').classList.remove('active'); }
 
-        function cerrarModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
-            document.body.style.overflow = '';
-            trabajoEditandoId = null;
-        }
-
-        // ─── RENDERIZADO DE TABLA ──────────────────
+        // ─── RENDER Y FILTROS ────────────────
         function obtenerTrabajosFiltrados() {
             const busqueda = document.getElementById('searchInput').value.toLowerCase().trim();
             let filtrados = [...trabajos];
@@ -356,48 +484,35 @@
                 filtrados = filtrados.filter(t =>
                     (t.cliente||'').toLowerCase().includes(busqueda) ||
                     (t.descripcion||'').toLowerCase().includes(busqueda) ||
-                    (t.telefono||'').includes(busqueda) ||
-                    (t.notas||'').toLowerCase().includes(busqueda)
+                    (t.telefono||'').includes(busqueda)
                 );
             }
-            filtrados.sort((a,b) => {
-                if (a.fechaTrabajo && b.fechaTrabajo) return new Date(a.fechaTrabajo) - new Date(b.fechaTrabajo);
-                if (a.fechaTrabajo) return -1;
-                if (b.fechaTrabajo) return 1;
-                return (b.fechaCreacion?.seconds||0) - (a.fechaCreacion?.seconds||0);
-            });
-            return filtrados;
+            return filtrados.sort((a,b) => (a.fechaTrabajo||'').localeCompare(b.fechaTrabajo||''));
         }
 
         function renderTabla() {
             const tbody = document.getElementById('tablaBody');
             const filtrados = obtenerTrabajosFiltrados();
             if (filtrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="far fa-clipboard"></i><p><strong>No se encontraron trabajos</strong></p></div></td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="far fa-clipboard"></i><p>No hay trabajos</p></div></td></tr>`;
             } else {
-                tbody.innerHTML = filtrados.map(t => {
-                    const estadoClass = `badge-${(t.estado||'pendiente').replace('_','-')}`;
-                    const estadoLabel = (t.estado||'pendiente').replace('_',' ');
-                    const fechaTrabajo = t.fechaTrabajo ? formatearFecha(t.fechaTrabajo) : 'Sin fecha';
-                    const recordatorioInfo = t.fechaRecordatorio ?
-                        `<span style="color:#25D366;font-size:0.8rem;"><i class="fas fa-bell"></i> ${formatearFechaHoraCorta(t.fechaRecordatorio)}</span>` :
-                        '<span style="color:#cbd5e1;">—</span>';
-                    return `<tr>
-                        <td data-label="Cliente"><div class="client-name">${escapeHtml(t.cliente||'')}</div></td>
-                        <td data-label="Teléfono"><span class="client-phone">${escapeHtml(t.telefono||'')}</span></td>
-                        <td data-label="Descripción">${escapeHtml(t.descripcion||'')}${t.notas ? `<br><small>📌 ${escapeHtml(t.notas)}</small>` : ''}</td>
-                        <td data-label="Fecha trabajo">${fechaTrabajo}</td>
-                        <td data-label="Estado"><span class="badge ${estadoClass}">${estadoLabel}</span></td>
-                        <td data-label="Recordatorio">${recordatorioInfo}</td>
-                        <td data-label="Acciones"><div class="actions-cell">
+                tbody.innerHTML = filtrados.map(t => `
+                    <tr>
+                        <td>${escapeHtml(t.cliente)}</td>
+                        <td>${escapeHtml(t.telefono)}</td>
+                        <td>${escapeHtml(t.descripcion)}${t.notas?`<br><small>📌 ${escapeHtml(t.notas)}</small>`:''}</td>
+                        <td>${t.fechaTrabajo ? formatearFecha(t.fechaTrabajo) : '—'}</td>
+                        <td><span class="badge badge-${t.estado.replace('_','-')}">${t.estado.replace('_',' ')}</span></td>
+                        <td>${t.fechaRecordatorio ? `<span style="color:#25D366"><i class="fas fa-bell"></i> ${formatearFechaHora(t.fechaRecordatorio)}</span>` : '—'}</td>
+                        <td class="actions-cell">
                             <button class="btn btn-whatsapp btn-xs" onclick="enviarWhatsApp('${t.id}')"><i class="fab fa-whatsapp"></i></button>
-                            ${t.estado !== 'completado' ? `<button class="btn btn-success btn-xs" onclick="cambiarEstado('${t.id}','completado')"><i class="fas fa-check"></i></button>` : `<button class="btn btn-warning btn-xs" onclick="cambiarEstado('${t.id}','pendiente')"><i class="fas fa-undo"></i></button>`}
-                            ${t.estado === 'pendiente' ? `<button class="btn btn-xs" style="background:#6366f1;color:#fff;" onclick="cambiarEstado('${t.id}','en_progreso')"><i class="fas fa-play"></i></button>` : ''}
-                            <button class="btn btn-xs" style="background:#f1f5f9;" onclick="editarTrabajo('${t.id}')"><i class="fas fa-edit"></i></button>
+                            ${t.estado!=='completado'?`<button class="btn btn-success btn-xs" onclick="cambiarEstado('${t.id}','completado')"><i class="fas fa-check"></i></button>`:`<button class="btn btn-warning btn-xs" onclick="cambiarEstado('${t.id}','pendiente')"><i class="fas fa-undo"></i></button>`}
+                            ${t.estado==='pendiente'?`<button class="btn btn-xs" style="background:#6366f1;color:#fff;" onclick="cambiarEstado('${t.id}','en_progreso')"><i class="fas fa-play"></i></button>`:''}
+                            <button class="btn btn-xs" style="background:#f1f5f9;" onclick="abrirModal('${t.id}')"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-danger btn-xs" onclick="eliminarTrabajo('${t.id}')"><i class="fas fa-trash"></i></button>
-                        </div></td>
-                    </tr>`;
-                }).join('');
+                        </td>
+                    </tr>
+                `).join('');
             }
             actualizarStats();
         }
@@ -412,90 +527,62 @@
         function setFiltro(filtro, btn) {
             filtroActual = filtro;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
+            btn.classList.add('active');
             renderTabla();
         }
 
-        // ─── WHATSAPP ──────────────────────────────
+        // ─── WHATSAPP ─────────────────────────
         function enviarWhatsApp(id) {
-            const trabajo = trabajos.find(t => t.id === id);
-            if (!trabajo) return;
-            const numeroLimpio = trabajo.telefono.replace(/\D/g,'');
-            if (!numeroLimpio) { mostrarToast('Número inválido','warning'); return; }
-            const fecha = trabajo.fechaTrabajo ? formatearFecha(trabajo.fechaTrabajo) : 'pendiente';
-            const mensaje = `Hola *${trabajo.cliente}*, te recordamos que tienes un trabajo *${trabajo.estado.replace('_',' ')}*:\n\n📝 _${trabajo.descripcion}_\n📅 Fecha: *${fecha}*\n\n¡Gracias! 🙌`;
-            window.open(`https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`, '_blank');
-            mostrarToast(`WhatsApp para ${trabajo.cliente}`, 'success');
+            const t = trabajos.find(x => x.id === id);
+            if (!t) return;
+            const num = t.telefono.replace(/\D/g,'');
+            if (!num) { mostrarToast('Número inválido','warning'); return; }
+            const fecha = t.fechaTrabajo ? formatearFecha(t.fechaTrabajo) : 'pendiente';
+            const mensaje = `Hola *${t.cliente}*, recordatorio de trabajo *${t.estado.replace('_',' ')}*:\n📝 ${t.descripcion}\n📅 ${fecha}\n¡Gracias! 🙌`;
+            window.open(`https://wa.me/${num}?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
 
         function whatsappMasivo() {
             const pendientes = trabajos.filter(t => t.estado !== 'completado');
-            if (pendientes.length === 0) { mostrarToast('Sin trabajos pendientes','info'); return; }
-            if (!confirm(`¿Abrir WhatsApp para ${pendientes.length} clientes?`)) return;
-            pendientes.forEach((t, i) => {
-                setTimeout(() => {
-                    const num = t.telefono.replace(/\D/g,'');
-                    if (num) {
-                        const fecha = t.fechaTrabajo ? formatearFecha(t.fechaTrabajo) : 'pendiente';
-                        const mensaje = `Hola *${t.cliente}*, te recordamos que tienes un trabajo *${t.estado.replace('_',' ')}*:\n\n📝 _${t.descripcion}_\n📅 Fecha: *${fecha}*\n\n¡Gracias! 🙌`;
-                        window.open(`https://wa.me/${num}?text=${encodeURIComponent(mensaje)}`, '_blank');
-                    }
-                }, i * 600);
-            });
-            mostrarToast(`Abriendo ${pendientes.length} conversaciones...`, 'info');
+            if (!pendientes.length) { mostrarToast('Sin pendientes','info'); return; }
+            if (!confirm(`¿Enviar WhatsApp a ${pendientes.length} clientes?`)) return;
+            pendientes.forEach((t,i) => setTimeout(() => enviarWhatsApp(t.id), i*600));
         }
 
-        // ─── RECORDATORIOS ─────────────────────────
+        // ─── RECORDATORIOS ────────────────────
         function verificarRecordatorios() {
             const ahora = new Date();
-            trabajos.forEach(trabajo => {
-                if (!trabajo.fechaRecordatorio || trabajo.estado === 'completado' || recordatoriosNotificados.has(trabajo.id)) return;
-                const fechaRec = new Date(trabajo.fechaRecordatorio);
-                const diffMs = ahora - fechaRec;
-                if (diffMs >= 0 && diffMs < 60 * 60 * 1000) {
-                    dispararRecordatorio(trabajo);
-                    recordatoriosNotificados.add(trabajo.id);
+            trabajos.forEach(t => {
+                if (!t.fechaRecordatorio || t.estado === 'completado' || recordatoriosNotificados.has(t.id)) return;
+                const rec = new Date(t.fechaRecordatorio);
+                if (ahora >= rec && ahora - rec < 3600000) {
+                    mostrarRecordatorio(t);
+                    recordatoriosNotificados.add(t.id);
                 }
             });
         }
 
-        function dispararRecordatorio(trabajo) {
+        function mostrarRecordatorio(t) {
             if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('🔔 Recordatorio', { body: `${trabajo.cliente}: ${trabajo.descripcion}`, tag: trabajo.id });
+                new Notification('🔔 Recordatorio', { body: `${t.cliente}: ${t.descripcion}` });
             }
-            const container = document.getElementById('reminderAlertContainer');
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'reminder-alert';
-            alertDiv.innerHTML = `
-                <div class="reminder-icon"><i class="fab fa-whatsapp"></i></div>
-                <div class="reminder-content">
-                    <h4>⏰ ¡Recordatorio!</h4>
-                    <p><strong>${escapeHtml(trabajo.cliente)}</strong> — ${escapeHtml(trabajo.descripcion)}</p>
-                    <div class="reminder-actions">
-                        <button class="btn btn-whatsapp btn-sm" onclick="enviarWhatsApp('${trabajo.id}'); this.closest('.reminder-alert').remove()">WhatsApp</button>
-                        <button class="btn btn-ghost btn-sm" onclick="this.closest('.reminder-alert').remove()">Cerrar</button>
-                    </div>
-                </div>`;
-            container.appendChild(alertDiv);
-            setTimeout(() => { if (alertDiv.parentNode) alertDiv.remove(); }, 30000);
+            const div = document.createElement('div');
+            div.className = 'reminder-alert';
+            div.innerHTML = `<div class="reminder-icon"><i class="fab fa-whatsapp"></i></div><div class="reminder-content"><h4>⏰ ¡Recordatorio!</h4><p><strong>${t.cliente}</strong> — ${t.descripcion}</p><button class="btn btn-whatsapp btn-sm" onclick="enviarWhatsApp('${t.id}');this.closest('.reminder-alert').remove()">WhatsApp</button></div>`;
+            document.getElementById('reminderAlertContainer').appendChild(div);
+            setTimeout(() => div.remove(), 30000);
         }
 
-        // ─── EXPORTAR / IMPORTAR ───────────────────
+        // ─── EXPORTAR / IMPORTAR ──────────────
         function exportarDatos() {
-            const dataStr = JSON.stringify(trabajos, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(trabajos, null, 2)], {type:'application/json'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `worktrack_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `worktrack_${new Date().toISOString().slice(0,10)}.json`;
             a.click();
-            URL.revokeObjectURL(a.href);
-            mostrarToast('Datos exportados', 'success');
         }
 
-        function importarDatos() {
-            document.getElementById('importFileInput').click();
-        }
-
+        function importarDatos() { document.getElementById('importFileInput').click(); }
         async function procesarImportacion(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -503,49 +590,45 @@
             reader.onload = async function(e) {
                 try {
                     const datos = JSON.parse(e.target.result);
-                    if (!Array.isArray(datos)) throw new Error('Formato inválido');
-                    if (confirm(`¿Reemplazar todos tus trabajos con ${datos.length} registros?`)) {
-                        const ref = getTrabajosRef();
-                        // Limpiar colección actual
-                        const snapshot = await ref.get();
-                        const batch = db.batch();
-                        snapshot.docs.forEach(doc => batch.delete(doc.ref));
-                        await batch.commit();
-                        // Agregar nuevos
-                        for (const t of datos) {
-                            const { id, ...data } = t;
-                            await ref.add(data);
-                        }
-                        recordatoriosNotificados.clear();
-                        mostrarToast('Importación exitosa', 'success');
+                    if (!confirm(`¿Reemplazar tus trabajos con ${datos.length} registros?`)) return;
+                    const ref = getTrabajosRef();
+                    const batch = db.batch();
+                    (await ref.get()).forEach(doc => batch.delete(doc.ref));
+                    await batch.commit();
+                    for (const item of datos) {
+                        const { id, ...data } = item;
+                        await ref.add(data);
                     }
-                } catch (err) {
-                    mostrarToast('Error al importar', 'warning');
-                }
+                    mostrarToast('Importación exitosa', 'success');
+                } catch { mostrarToast('Archivo no válido', 'warning'); }
             };
             reader.readAsText(file);
             event.target.value = '';
         }
 
-        // ─── UTILIDADES ────────────────────────────
-        function escapeHtml(texto) { const div = document.createElement('div'); div.textContent = texto; return div.innerHTML; }
-        function formatearFecha(f) { if(!f) return ''; const d = new Date(f + 'T00:00:00'); return d.toLocaleDateString('es-MX',{weekday:'short',year:'numeric',month:'short',day:'numeric'}); }
-        function formatearFechaHoraCorta(f) { if(!f) return ''; const d = new Date(f); return d.toLocaleString('es-MX',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
-        function mostrarToast(mensaje, tipo='info') {
-            const container = document.getElementById('toastContainer');
+        // ─── UTILIDADES ──────────────────────
+        function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+        function formatearFecha(f) { if(!f) return ''; const d = new Date(f+'T00:00:00'); return d.toLocaleDateString('es-MX',{weekday:'short',year:'numeric',month:'short',day:'numeric'}); }
+        function formatearFechaHora(f) { if(!f) return ''; return new Date(f).toLocaleString('es-MX',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
+        function mostrarToast(msg, tipo='info') {
+            const cont = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${tipo}`;
-            toast.innerHTML = `<i class="fas fa-${tipo==='success'?'check-circle':tipo==='warning'?'exclamation-triangle':'info-circle'}"></i> ${mensaje}`;
-            container.appendChild(toast);
-            setTimeout(() => { if(toast.parentNode) toast.remove(); }, 3000);
+            toast.innerHTML = `<i class="fas fa-${tipo==='success'?'check-circle':tipo==='warning'?'exclamation-triangle':'info-circle'}"></i> ${msg}`;
+            cont.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
 
-        // Inicialización
+        // Cerrar modal al hacer clic fuera
         document.getElementById('modalOverlay').addEventListener('click', function(e) { if(e.target===this) cerrarModal(); });
         document.addEventListener('keydown', e => { if(e.key==='Escape') cerrarModal(); });
-        if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+
+        // Verificar recordatorios periódicamente
         setInterval(verificarRecordatorios, 30000);
-        setTimeout(verificarRecordatorios, 3000);
+        setTimeout(verificarRecordatorios, 5000);
+
+        // Solicitar permiso de notificaciones
+        if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
     </script>
 </body>
 </html>
