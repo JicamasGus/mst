@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTrack Pro · Clientes</title>
+    <title>MST · Work</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ... (todo el CSS permanece igual, sin cambios) ... */
         :root {
             --bg: #f0f4f8;
             --surface: #ffffff;
@@ -118,21 +119,18 @@
     <!-- APLICACIÓN PRINCIPAL -->
     <div id="appScreen" class="app-container">
         <header class="header">
-            <div class="logo"><i class="fas fa-tasks"></i><span>WorkTrack Pro</span></div>
+            <div class="logo"><i class="fas fa-tasks"></i><span>MST</span></div>
             <div class="nav-btns" id="navButtons">
                 <button class="btn btn-nav active" data-vista="trabajos" onclick="cambiarVista('trabajos')"><i class="fas fa-briefcase"></i> Trabajos</button>
                 <button class="btn btn-nav" data-vista="clientes" onclick="cambiarVista('clientes')"><i class="fas fa-users"></i> Clientes</button>
             </div>
             <div class="header-actions">
-                <button class="btn btn-outline btn-sm" onclick="exportarDatos()"><i class="fas fa-download"></i> Exportar</button>
-                <button class="btn btn-outline btn-sm" onclick="importarDatos()"><i class="fas fa-upload"></i> Importar</button>
-                <button class="btn btn-whatsapp btn-sm" onclick="whatsappMasivo()"><i class="fab fa-whatsapp"></i> Masivo</button>
+                
                 <button class="btn btn-primary" onclick="abrirModal()"><i class="fas fa-plus"></i> Nuevo Trabajo</button>
                 <button class="btn btn-ghost btn-sm" onclick="cerrarSesion()" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i> Salir</button>
             </div>
         </header>
         <main class="container">
-            <!-- Estadísticas (siempre visibles) -->
             <div class="stats-row">
                 <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-briefcase"></i></div><div class="stat-info"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total trabajos</div></div></div>
                 <div class="stat-card"><div class="stat-icon amber"><i class="fas fa-clock"></i></div><div class="stat-info"><div class="stat-value" id="statPendientes">0</div><div class="stat-label">Pendientes</div></div></div>
@@ -166,7 +164,7 @@
             <div id="vistaClientes" style="display:none;">
                 <div class="toolbar">
                     <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchClientesInput" placeholder="Buscar cliente..." oninput="renderClientes()"></div>
-                    <button class="btn btn-whatsapp btn-sm" onclick="whatsappMasivoClientes()"><i class="fab fa-whatsapp"></i> Oferta masiva</button>
+                    
                 </div>
                 <div class="table-container">
                     <div class="table-wrapper">
@@ -197,7 +195,7 @@
                         <div class="form-group"><label>🏷️ Estado</label><select id="estado"><option value="pendiente">Pendiente</option><option value="en_progreso">En progreso</option><option value="completado">Completado</option></select></div>
                         <div class="form-group"><label>🔔 Recordatorio</label><input type="datetime-local" id="fechaRecordatorio"></div>
                     </div>
-                    <div class="form-group"><label>🗒️ Notas</label><textarea id="notas" rows="2"></textarea></div>
+                    <div class="form-group"><label>Direccion</label><textarea id="notas" rows="2"></textarea></div>
                 </form>
             </div>
             <div class="modal-footer"><button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button><button class="btn btn-primary" type="submit" form="formTrabajo"><i class="fas fa-save"></i> Guardar</button></div>
@@ -205,6 +203,13 @@
     </div>
     <div class="toast-container" id="toastContainer"></div>
     <div id="reminderAlertContainer"></div>
+    <!-- Modal para enlaces bloqueados -->
+    <div class="modal-overlay" id="modalEnlaces" style="z-index:10000;">
+        <div class="modal">
+            <div class="modal-header"><h3>🔗 Abre los enlaces manualmente</h3><button class="modal-close" onclick="document.getElementById('modalEnlaces').classList.remove('active')"><i class="fas fa-times"></i></button></div>
+            <div class="modal-body" id="modalEnlacesBody"></div>
+        </div>
+    </div>
     <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="procesarImportacion(event)">
 
     <!-- Firebase SDKs -->
@@ -214,7 +219,7 @@
 
     <script>
         // ⚠️ PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE ⚠️
-        const firebaseConfig = {
+       const firebaseConfig = {
   apiKey: "AIzaSyApCmv-8WzGXtKRDUjO3btMTolGNXHtHPQ",
   authDomain: "multi-bb1eb.firebaseapp.com",
   projectId: "multi-bb1eb",
@@ -227,7 +232,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Estado global
         let trabajos = [];
         let clientes = [];
         let filtroActual = 'todos';
@@ -286,7 +290,7 @@
                 case 'auth/user-not-found': return 'Usuario no encontrado.';
                 case 'auth/wrong-password': return 'Contraseña incorrecta.';
                 case 'auth/invalid-credential': return 'Credenciales incorrectas.';
-                default: return 'Error al iniciar sesión. Inténtalo de nuevo.';
+                default: return 'Error al iniciar sesión.';
             }
         }
 
@@ -311,7 +315,7 @@
             }
         });
 
-        // ─── FIRESTORE: COLECCIONES ──────────
+        // ─── FIRESTORE ─────────────────────────
         function getTrabajosRef() {
             const user = auth.currentUser;
             if (!user) throw new Error('No autenticado');
@@ -326,19 +330,14 @@
         function iniciarEscuchas() {
             if (unsubscribeTrabajos) unsubscribeTrabajos();
             if (unsubscribeClientes) unsubscribeClientes();
-
             const user = auth.currentUser;
             if (!user) return;
-
-            // Escucha de trabajos
             unsubscribeTrabajos = getTrabajosRef().onSnapshot(snapshot => {
                 trabajos = [];
                 snapshot.forEach(doc => trabajos.push({ id: doc.id, ...doc.data() }));
                 renderTrabajos();
                 actualizarStats();
             });
-
-            // Escucha de clientes
             unsubscribeClientes = getClientesRef().onSnapshot(snapshot => {
                 clientes = [];
                 snapshot.forEach(doc => clientes.push({ id: doc.id, ...doc.data() }));
@@ -347,17 +346,13 @@
             });
         }
 
-        // ─── REGISTRO AUTOMÁTICO DE CLIENTE ────
+        // ─── REGISTRO DE CLIENTES ──────────────
         async function actualizarCliente(nombre, telefono, fechaTrabajo) {
             if (!nombre || !telefono) return;
             const telefonoLimpio = telefono.replace(/\D/g, '');
             if (!telefonoLimpio) return;
-            const clienteRef = getClientesRef().doc(telefonoLimpio);
-            // Usamos set con merge para no perder datos previos si ya existe
-            await clienteRef.set({
-                nombre,
-                telefono: telefonoLimpio,
-                ultimoTrabajo: fechaTrabajo || null
+            await getClientesRef().doc(telefonoLimpio).set({
+                nombre, telefono: telefonoLimpio, ultimoTrabajo: fechaTrabajo || null
             }, { merge: true });
         }
 
@@ -375,8 +370,7 @@
                 notas: document.getElementById('notas').value.trim(),
             };
             if (!datos.cliente || !datos.telefono || !datos.descripcion || !datos.fechaTrabajo) {
-                mostrarToast('Completa todos los campos obligatorios', 'warning');
-                return;
+                mostrarToast('Completa los campos obligatorios', 'warning'); return;
             }
             try {
                 if (id) {
@@ -384,18 +378,12 @@
                     mostrarToast('Trabajo actualizado', 'success');
                     if (datos.fechaRecordatorio) recordatoriosNotificados.delete(id);
                 } else {
-                    await getTrabajosRef().add({
-                        ...datos,
-                        fechaCreacion: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    await getTrabajosRef().add({...datos, fechaCreacion: firebase.firestore.FieldValue.serverTimestamp()});
                     mostrarToast('Trabajo creado', 'success');
                 }
-                // 🔥 Registrar/actualizar cliente automáticamente
                 await actualizarCliente(datos.cliente, datos.telefono, datos.fechaTrabajo);
                 cerrarModal();
-            } catch (error) {
-                mostrarToast('Error: ' + error.message, 'warning');
-            }
+            } catch (error) { mostrarToast('Error: ' + error.message, 'warning'); }
         }
 
         async function eliminarTrabajo(id) {
@@ -405,7 +393,6 @@
                 await getTrabajosRef().doc(id).delete();
                 recordatoriosNotificados.delete(id);
                 mostrarToast('Eliminado', 'warning');
-                // No borramos el cliente de la lista, permanece
             }
         }
 
@@ -447,12 +434,11 @@
         }
         function cerrarModal() { document.getElementById('modalOverlay').classList.remove('active'); }
 
-        // ─── VISTAS (TRABAJOS / CLIENTES) ──────
+        // ─── VISTAS ───────────────────────────
         function cambiarVista(vista) {
             vistaActual = vista;
             document.getElementById('vistaTrabajos').style.display = vista === 'trabajos' ? 'block' : 'none';
             document.getElementById('vistaClientes').style.display = vista === 'clientes' ? 'block' : 'none';
-            // Botones de navegación
             document.querySelectorAll('#navButtons .btn-nav').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.dataset.vista === vista) btn.classList.add('active');
@@ -461,7 +447,6 @@
             else renderClientes();
         }
 
-        // ─── RENDER TRABAJOS ───────────────────
         function obtenerTrabajosFiltrados() {
             const busqueda = document.getElementById('searchInput').value.toLowerCase().trim();
             let filtrados = [...trabajos];
@@ -513,7 +498,6 @@
             renderTrabajos();
         }
 
-        // ─── RENDER CLIENTES ───────────────────
         function obtenerClientesFiltrados() {
             const busqueda = document.getElementById('searchClientesInput')?.value.toLowerCase().trim() || '';
             let filtrados = [...clientes];
@@ -523,7 +507,7 @@
                     (c.telefono||'').includes(busqueda)
                 );
             }
-            return filtrados.sort((a,b) => (b.ultimoTrabajo || '').localeCompare(a.ultimoTrabajo || ''));
+            return filtrados.sort((a,b) => (b.ultimoTrabajo||'').localeCompare(a.ultimoTrabajo||''));
         }
 
         function renderClientes() {
@@ -559,7 +543,7 @@
             actualizarStats();
         }
 
-        // ─── WHATSAPP TRABAJOS ─────────────────
+        // ─── WHATSAPP INDIVIDUAL ──────────────
         function enviarWhatsApp(id) {
             const t = trabajos.find(x => x.id === id);
             if (!t) return;
@@ -574,26 +558,56 @@
             const pendientes = trabajos.filter(t => t.estado !== 'completado');
             if (!pendientes.length) { mostrarToast('Sin pendientes','info'); return; }
             if (!confirm(`¿Enviar WhatsApp a ${pendientes.length} trabajos pendientes?`)) return;
-            pendientes.forEach((t,i) => setTimeout(() => enviarWhatsApp(t.id), i*600));
+            pendientes.forEach(t => enviarWhatsApp(t.id));
         }
 
-        // ─── WHATSAPP CLIENTES (SEGUIMIENTO) ──
+        // ─── OFRECER SERVICIOS (CLIENTES) ─────
         function ofrecerServicios(telefonoLimpio) {
             const cliente = clientes.find(c => c.id === telefonoLimpio);
             if (!cliente) return;
             const nombre = cliente.nombre || 'cliente';
             const mensaje = `¡Hola *${nombre}*! 👋\n\nEsperamos que estés muy bien. Queremos recordarte que estamos a tu disposición para cualquier trabajo que necesites. Si tienes un nuevo proyecto, no dudes en contactarnos.\n\n¡Gracias por confiar en nosotros! 🙌`;
-            window.open(`https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            const ventana = window.open(`https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            if (!ventana) {
+                // Si fue bloqueada, devolvemos false para que el masivo la gestione
+                return false;
+            }
             mostrarToast(`Oferta enviada a ${nombre}`, 'success');
+            return true;
         }
 
-        function whatsappMasivoClientes() {
+        function ofertaMasivaSegura() {
             if (clientes.length === 0) { mostrarToast('No hay clientes registrados','info'); return; }
-            if (!confirm(`¿Enviar oferta de servicios a ${clientes.length} clientes?`)) return;
-            clientes.forEach((c, i) => {
-                setTimeout(() => ofrecerServicios(c.id), i * 600);
-            });
-            mostrarToast(`Enviando ofertas a ${clientes.length} clientes...`, 'info');
+            if (!confirm(`¿Enviar oferta de servicios a los ${clientes.length} clientes?`)) return;
+
+            const fallidos = [];
+
+            // Intentamos abrir todas en el mismo evento (mejor para navegadores)
+            for (const c of clientes) {
+                const ok = ofrecerServicios(c.id);
+                if (!ok) fallidos.push(c);
+            }
+
+            if (fallidos.length > 0) {
+                // Mostrar modal con enlaces manuales
+                const modal = document.getElementById('modalEnlaces');
+                const body = document.getElementById('modalEnlacesBody');
+                const lista = fallidos.map(c => {
+                    const num = c.id;
+                    const nombre = c.nombre || 'cliente';
+                    const mensaje = `¡Hola *${nombre}*! 👋\n\nEsperamos que estés muy bien. Queremos recordarte que estamos a tu disposición para cualquier trabajo que necesites. Si tienes un nuevo proyecto, no dudes en contactarnos.\n\n¡Gracias por confiar en nosotros! 🙌`;
+                    const url = `https://wa.me/${num}?text=${encodeURIComponent(mensaje)}`;
+                    return `<div style="margin:0.5rem 0; display:flex; justify-content:space-between; align-items:center;">
+                        <span>${escapeHtml(nombre)} (${num})</span>
+                        <a href="${url}" target="_blank" class="btn btn-whatsapp btn-xs"><i class="fab fa-whatsapp"></i> Abrir</a>
+                    </div>`;
+                }).join('');
+                body.innerHTML = `<p>Algunos enlaces no pudieron abrirse automáticamente (el navegador los bloqueó). Haz clic en cada botón para enviar el mensaje:</p>${lista}`;
+                modal.classList.add('active');
+                mostrarToast(`Envía manualmente los ${fallidos.length} enlaces restantes`, 'warning');
+            } else {
+                mostrarToast(`Ofertas enviadas a todos los clientes`, 'success');
+            }
         }
 
         // ─── RECORDATORIOS ────────────────────
@@ -640,12 +654,10 @@
                     const datos = JSON.parse(e.target.result);
                     if (!datos.trabajos || !datos.clientes) throw new Error('Formato incorrecto');
                     if (!confirm(`¿Reemplazar tus datos con ${datos.trabajos.length} trabajos y ${datos.clientes.length} clientes?`)) return;
-                    // Limpiar colecciones actuales
                     const batch = db.batch();
                     (await getTrabajosRef().get()).forEach(doc => batch.delete(doc.ref));
                     (await getClientesRef().get()).forEach(doc => batch.delete(doc.ref));
                     await batch.commit();
-                    // Importar nuevos datos
                     for (const t of datos.trabajos) {
                         const { id, ...data } = t;
                         await getTrabajosRef().add(data);
@@ -678,9 +690,14 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Eventos
+        // Eventos de cierre de modales
         document.getElementById('modalOverlay').addEventListener('click', function(e) { if(e.target===this) cerrarModal(); });
-        document.addEventListener('keydown', e => { if(e.key==='Escape') cerrarModal(); });
+        document.getElementById('modalEnlaces').addEventListener('click', function(e) { if(e.target===this) this.classList.remove('active'); });
+        document.addEventListener('keydown', e => { if(e.key==='Escape') {
+            cerrarModal();
+            document.getElementById('modalEnlaces').classList.remove('active');
+        }});
+
         setInterval(verificarRecordatorios, 30000);
         setTimeout(verificarRecordatorios, 5000);
         if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
