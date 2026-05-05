@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MST | WorkSpace</title>
+    <title>WorkTrack Pro · Clientes</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -30,108 +30,38 @@
         body { font-family:'Segoe UI', system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); line-height:1.6; min-height:100vh; }
 
         /* ─── PANTALLA DE LOGIN ──────────────── */
-        .auth-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 2rem;
-            background: linear-gradient(135deg, #1e3a5f 0%, #1a2d47 100%);
-        }
-        .auth-card {
-            background: #fff;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
-            padding: 2.5rem 2rem;
-            width: 100%;
-            max-width: 420px;
-            text-align: center;
-        }
-        .auth-card .logo-auth {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-        .auth-card h2 {
-            font-size: 1.6rem;
-            margin-bottom: 1.5rem;
-            color: var(--text);
-        }
-        .auth-form .form-group {
-            margin-bottom: 1.2rem;
-            text-align: left;
-        }
-        .auth-form label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            display: block;
-            margin-bottom: 0.3rem;
-        }
-        .auth-form input {
-            width: 100%;
-            padding: 0.7rem 1rem;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-sm);
-            font-size: 0.9rem;
-            transition: var(--transition);
-        }
-        .auth-form input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(74,108,247,0.1);
-        }
-        .auth-btn {
-            width: 100%;
-            padding: 0.75rem;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-top: 0.5rem;
-        }
-        .auth-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-        }
-        .auth-toggle {
-            margin-top: 1.2rem;
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-        .auth-toggle a {
-            color: var(--primary);
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .auth-error {
-            color: var(--danger);
-            font-size: 0.8rem;
-            margin-top: 0.3rem;
-            display: none;
-        }
+        .auth-container { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:2rem; background:linear-gradient(135deg, #1e3a5f 0%, #1a2d47 100%); }
+        .auth-card { background:#fff; border-radius:var(--radius); box-shadow:var(--shadow-lg); padding:2.5rem 2rem; width:100%; max-width:420px; text-align:center; }
+        .auth-card .logo-auth { font-size:2.5rem; color:var(--primary); margin-bottom:0.5rem; }
+        .auth-card h2 { font-size:1.6rem; margin-bottom:1.5rem; }
+        .auth-form .form-group { margin-bottom:1.2rem; text-align:left; }
+        .auth-form label { font-weight:600; font-size:0.85rem; display:block; margin-bottom:0.3rem; }
+        .auth-form input { width:100%; padding:0.7rem 1rem; border:2px solid var(--border); border-radius:var(--radius-sm); font-size:0.9rem; transition:var(--transition); }
+        .auth-form input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(74,108,247,0.1); }
+        .auth-btn { width:100%; padding:0.75rem; background:var(--primary); color:#fff; border:none; border-radius:var(--radius-sm); font-weight:700; font-size:1rem; cursor:pointer; transition:var(--transition); margin-top:0.5rem; }
+        .auth-btn:hover { background:var(--primary-dark); }
+        .auth-toggle { margin-top:1.2rem; font-size:0.9rem; color:var(--text-light); }
+        .auth-toggle a { color:var(--primary); font-weight:600; cursor:pointer; }
+        .auth-error { color:var(--danger); font-size:0.8rem; margin-top:0.3rem; display:none; }
 
         /* ─── HEADER Y APP ──────────────────── */
-        .app-container {
-            display: none;
-        }
+        .app-container { display:none; }
         .header { background:linear-gradient(135deg, #1e3a5f 0%, #1a2d47 100%); color:#fff; padding:1.2rem 2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; box-shadow:0 4px 20px rgba(0,0,0,0.15); position:sticky; top:0; z-index:100; }
         .header .logo { display:flex; align-items:center; gap:0.6rem; font-size:1.4rem; font-weight:700; }
         .header .logo i { font-size:1.8rem; color:#60a5fa; }
+        .header .nav-btns { display:flex; gap:0.5rem; }
         .btn { display:inline-flex; align-items:center; gap:0.4rem; padding:0.55rem 1.1rem; border:none; border-radius:var(--radius-sm); font-weight:600; font-size:0.9rem; cursor:pointer; transition:all var(--transition); text-decoration:none; white-space:nowrap; }
-        .btn-primary { background:var(--primary); color:#fff; } .btn-primary:hover { background:var(--primary-dark); transform:translateY(-1px); box-shadow:var(--shadow); }
+        .btn-primary { background:var(--primary); color:#fff; } .btn-primary:hover { background:var(--primary-dark); }
         .btn-whatsapp { background:var(--whatsapp); color:#fff; } .btn-whatsapp:hover { background:var(--whatsapp-dark); }
         .btn-outline { background:transparent; border:2px solid rgba(255,255,255,0.5); color:#fff; } .btn-outline:hover { background:rgba(255,255,255,0.1); }
         .btn-sm { padding:0.4rem 0.7rem; font-size:0.78rem; border-radius:6px; } .btn-xs { padding:0.3rem 0.55rem; font-size:0.7rem; }
         .btn-success { background:var(--success); color:#fff; } .btn-warning { background:var(--warning); color:#1e293b; } .btn-danger { background:var(--danger); color:#fff; }
         .btn-ghost { background:transparent; color:var(--text-light); } .btn-ghost:hover { background:#f1f5f9; color:var(--text); }
+        .btn-nav { background:rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.3); }
+        .btn-nav.active { background:#fff; color:#1e293b; font-weight:700; }
         .container { max-width:1300px; margin:0 auto; padding:1.5rem; }
         .stats-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:1rem; margin-bottom:1.5rem; }
         .stat-card { background:var(--surface); border-radius:var(--radius); padding:1.2rem 1.4rem; box-shadow:var(--shadow-sm); display:flex; align-items:center; gap:1rem; border:1px solid var(--border); }
-        .stat-card:hover { box-shadow:var(--shadow); }
         .stat-icon { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.3rem; }
         .stat-icon.blue { background:#eff6ff; color:#3b82f6; } .stat-icon.amber { background:#fffbeb; color:#f59e0b; } .stat-icon.green { background:#ecfdf5; color:#10b981; } .stat-icon.whatsapp-bg { background:#e6f9ee; color:#25D366; }
         .stat-info .stat-value { font-size:1.8rem; font-weight:800; } .stat-info .stat-label { font-size:0.8rem; color:var(--text-light); }
@@ -148,7 +78,7 @@
         tbody tr:hover { background:#f8fafc; }
         .badge { display:inline-block; padding:0.3rem 0.7rem; border-radius:20px; font-size:0.75rem; font-weight:600; }
         .badge-pendiente { background:#fef3c7; color:#92400e; } .badge-progreso { background:#dbeafe; color:#1e40af; } .badge-completado { background:#d1fae5; color:#065f46; }
-        .actions-cell { display:flex; gap:0.3rem; flex-wrap:wrap; }
+        .actions-cell { display:flex; gap:0.3rem; flex-wrap:wrap; align-items:center; }
         .empty-state { text-align:center; padding:4rem 2rem; color:var(--text-light); }
         .empty-state i { font-size:4rem; display:block; margin-bottom:1rem; opacity:0.4; }
         .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:999; display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden; transition:0.25s; padding:1rem; }
@@ -176,63 +106,81 @@
             <div class="logo-auth"><i class="fas fa-tasks"></i></div>
             <h2 id="authTitle">Iniciar sesión</h2>
             <form class="auth-form" id="authForm">
-                <div class="form-group">
-                    <label>Correo electrónico</label>
-                    <input type="email" id="email" placeholder="tu@correo.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Contraseña</label>
-                    <input type="password" id="password" placeholder="Mínimo 6 caracteres" required minlength="6">
-                </div>
+                <div class="form-group"><label>Correo electrónico</label><input type="email" id="email" placeholder="tu@correo.com" required></div>
+                <div class="form-group"><label>Contraseña</label><input type="password" id="password" placeholder="Mínimo 6 caracteres" required minlength="6"></div>
                 <div class="auth-error" id="authError"></div>
                 <button type="submit" class="auth-btn" id="authBtn">Entrar</button>
             </form>
-            <p class="auth-toggle">
-                <span id="toggleText">¿No tienes cuenta?</span> <a id="toggleLink" onclick="toggleAuthMode()">Regístrate aquí</a>
-            </p>
+            <p class="auth-toggle"><span id="toggleText">¿No tienes cuenta?</span> <a id="toggleLink" onclick="toggleAuthMode()">Regístrate aquí</a></p>
         </div>
     </div>
 
     <!-- APLICACIÓN PRINCIPAL -->
     <div id="appScreen" class="app-container">
         <header class="header">
-            <div class="logo"><i class="fas fa-tasks"></i><span>MST</span></div>
+            <div class="logo"><i class="fas fa-tasks"></i><span>WorkTrack Pro</span></div>
+            <div class="nav-btns" id="navButtons">
+                <button class="btn btn-nav active" data-vista="trabajos" onclick="cambiarVista('trabajos')"><i class="fas fa-briefcase"></i> Trabajos</button>
+                <button class="btn btn-nav" data-vista="clientes" onclick="cambiarVista('clientes')"><i class="fas fa-users"></i> Clientes</button>
+            </div>
             <div class="header-actions">
-                
+                <button class="btn btn-outline btn-sm" onclick="exportarDatos()"><i class="fas fa-download"></i> Exportar</button>
+                <button class="btn btn-outline btn-sm" onclick="importarDatos()"><i class="fas fa-upload"></i> Importar</button>
                 <button class="btn btn-whatsapp btn-sm" onclick="whatsappMasivo()"><i class="fab fa-whatsapp"></i> Masivo</button>
                 <button class="btn btn-primary" onclick="abrirModal()"><i class="fas fa-plus"></i> Nuevo Trabajo</button>
                 <button class="btn btn-ghost btn-sm" onclick="cerrarSesion()" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i> Salir</button>
             </div>
         </header>
         <main class="container">
+            <!-- Estadísticas (siempre visibles) -->
             <div class="stats-row">
                 <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-briefcase"></i></div><div class="stat-info"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total trabajos</div></div></div>
                 <div class="stat-card"><div class="stat-icon amber"><i class="fas fa-clock"></i></div><div class="stat-info"><div class="stat-value" id="statPendientes">0</div><div class="stat-label">Pendientes</div></div></div>
                 <div class="stat-card"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div><div class="stat-info"><div class="stat-value" id="statCompletados">0</div><div class="stat-label">Completados</div></div></div>
-                <div class="stat-card"><div class="stat-icon whatsapp-bg"><i class="fab fa-whatsapp"></i></div><div class="stat-info"><div class="stat-value" id="statRecordatorios">0</div><div class="stat-label">Recordatorios prog.</div></div></div>
+                <div class="stat-card"><div class="stat-icon whatsapp-bg"><i class="fas fa-users"></i></div><div class="stat-info"><div class="stat-value" id="statClientes">0</div><div class="stat-label">Clientes</div></div></div>
             </div>
-            <div class="toolbar">
-                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Buscar cliente o descripción..." oninput="renderTabla()"></div>
-                <div class="filter-btns">
-                    <button class="filter-btn active" data-filter="todos" onclick="setFiltro('todos', this)">Todos</button>
-                    <button class="filter-btn" data-filter="pendiente" onclick="setFiltro('pendiente', this)">Pendientes</button>
-                    <button class="filter-btn" data-filter="en_progreso" onclick="setFiltro('en_progreso', this)">En progreso</button>
-                    <button class="filter-btn" data-filter="completado" onclick="setFiltro('completado', this)">Completados</button>
-                    <button class="filter-btn" data-filter="con_recordatorio" onclick="setFiltro('con_recordatorio', this)"><i class="far fa-bell"></i> Con recordatorio</button>
+
+            <!-- VISTA DE TRABAJOS -->
+            <div id="vistaTrabajos">
+                <div class="toolbar">
+                    <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Buscar cliente o descripción..." oninput="renderTabla()"></div>
+                    <div class="filter-btns">
+                        <button class="filter-btn active" data-filter="todos" onclick="setFiltro('todos', this)">Todos</button>
+                        <button class="filter-btn" data-filter="pendiente" onclick="setFiltro('pendiente', this)">Pendientes</button>
+                        <button class="filter-btn" data-filter="en_progreso" onclick="setFiltro('en_progreso', this)">En progreso</button>
+                        <button class="filter-btn" data-filter="completado" onclick="setFiltro('completado', this)">Completados</button>
+                        <button class="filter-btn" data-filter="con_recordatorio" onclick="setFiltro('con_recordatorio', this)"><i class="far fa-bell"></i> Con recordatorio</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Cliente</th><th>Teléfono</th><th>Descripción</th><th>Fecha y hora</th><th>Estado</th><th>Recordatorio</th><th>Acciones</th></tr></thead>
+                            <tbody id="tablaBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <div class="table-container">
-                <div class="table-wrapper">
-                    <table>
-                        <thead><tr><th>Cliente</th><th>Teléfono</th><th>Descripción</th><th>Fecha y hora</th><th>Estado</th><th>Recordatorio</th><th>Acciones</th></tr></thead>
-                        <tbody id="tablaBody"></tbody>
-                    </table>
+
+            <!-- VISTA DE CLIENTES -->
+            <div id="vistaClientes" style="display:none;">
+                <div class="toolbar">
+                    <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchClientesInput" placeholder="Buscar cliente..." oninput="renderClientes()"></div>
+                    <button class="btn btn-whatsapp btn-sm" onclick="whatsappMasivoClientes()"><i class="fab fa-whatsapp"></i> Oferta masiva</button>
+                </div>
+                <div class="table-container">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Nombre</th><th>Teléfono</th><th>Último trabajo</th><th>Acciones</th></tr></thead>
+                            <tbody id="clientesBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- MODAL -->
+    <!-- MODAL DE TRABAJO -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
             <div class="modal-header"><h3 id="modalTitulo">Nuevo Trabajo</h3><button class="modal-close" onclick="cerrarModal()"><i class="fas fa-times"></i></button></div>
@@ -242,12 +190,7 @@
                     <div class="form-group"><label>👤 Nombre del cliente *</label><input type="text" id="cliente" required></div>
                     <div class="form-row">
                         <div class="form-group"><label>📱 Teléfono *</label><input type="tel" id="telefono" required><div class="form-hint">Con código de país (ej: +52)</div></div>
-                        <!-- 🔥 CAMBIO CLAVE: FECHA Y HORA JUNTAS 🔥 -->
-                        <div class="form-group">
-                            <label>📅 Fecha y hora del trabajo</label>
-                            <input type="datetime-local" id="fechaTrabajo" required>
-                            <div class="form-hint">Día y hora en que se realizará</div>
-                        </div>
+                        <div class="form-group"><label>📅 Fecha y hora del trabajo</label><input type="datetime-local" id="fechaTrabajo" required></div>
                     </div>
                     <div class="form-group"><label>📝 Descripción *</label><textarea id="descripcion" required></textarea></div>
                     <div class="form-row">
@@ -264,14 +207,14 @@
     <div id="reminderAlertContainer"></div>
     <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="procesarImportacion(event)">
 
-    <!-- 🔥 Firebase SDKs -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
 
     <script>
         // ⚠️ PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE ⚠️
-       const firebaseConfig = {
+        const firebaseConfig = {
   apiKey: "AIzaSyApCmv-8WzGXtKRDUjO3btMTolGNXHtHPQ",
   authDomain: "multi-bb1eb.firebaseapp.com",
   projectId: "multi-bb1eb",
@@ -284,11 +227,15 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // Estado global
         let trabajos = [];
+        let clientes = [];
         let filtroActual = 'todos';
         let trabajoEditandoId = null;
+        let vistaActual = 'trabajos';
         let recordatoriosNotificados = new Set();
-        let unsubscribe = null;
+        let unsubscribeTrabajos = null;
+        let unsubscribeClientes = null;
 
         // ─── AUTENTICACIÓN ──────────────────────
         const authScreen = document.getElementById('authScreen');
@@ -321,14 +268,10 @@
             e.preventDefault();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
-
             authError.style.display = 'none';
             try {
-                if (isLogin) {
-                    await auth.signInWithEmailAndPassword(email, password);
-                } else {
-                    await auth.createUserWithEmailAndPassword(email, password);
-                }
+                if (isLogin) await auth.signInWithEmailAndPassword(email, password);
+                else await auth.createUserWithEmailAndPassword(email, password);
             } catch (error) {
                 authError.textContent = traducirError(error.code);
                 authError.style.display = 'block';
@@ -356,39 +299,69 @@
             if (user) {
                 authScreen.style.display = 'none';
                 appScreen.style.display = 'block';
-                iniciarEscuchaTiempoReal();
+                iniciarEscuchas();
             } else {
                 authScreen.style.display = 'flex';
                 appScreen.style.display = 'none';
-                if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+                if (unsubscribeTrabajos) { unsubscribeTrabajos(); unsubscribeTrabajos = null; }
+                if (unsubscribeClientes) { unsubscribeClientes(); unsubscribeClientes = null; }
                 trabajos = [];
-                renderTabla();
+                clientes = [];
+                renderTodo();
             }
         });
 
-        // ─── FIRESTORE EN TIEMPO REAL ──────────
-        function iniciarEscuchaTiempoReal() {
-            if (unsubscribe) unsubscribe();
-            const user = auth.currentUser;
-            if (!user) return;
-            const trabajosRef = db.collection('usuarios').doc(user.uid).collection('trabajos');
-            unsubscribe = trabajosRef.onSnapshot(snapshot => {
-                trabajos = [];
-                snapshot.forEach(doc => trabajos.push({ id: doc.id, ...doc.data() }));
-                renderTabla();
-            }, error => {
-                console.error('Error en Firestore:', error);
-                mostrarToast('Error al sincronizar datos', 'warning');
-            });
-        }
-
+        // ─── FIRESTORE: COLECCIONES ──────────
         function getTrabajosRef() {
             const user = auth.currentUser;
             if (!user) throw new Error('No autenticado');
             return db.collection('usuarios').doc(user.uid).collection('trabajos');
         }
+        function getClientesRef() {
+            const user = auth.currentUser;
+            if (!user) throw new Error('No autenticado');
+            return db.collection('usuarios').doc(user.uid).collection('clientes');
+        }
 
-        // ─── CRUD ─────────────────────────────
+        function iniciarEscuchas() {
+            if (unsubscribeTrabajos) unsubscribeTrabajos();
+            if (unsubscribeClientes) unsubscribeClientes();
+
+            const user = auth.currentUser;
+            if (!user) return;
+
+            // Escucha de trabajos
+            unsubscribeTrabajos = getTrabajosRef().onSnapshot(snapshot => {
+                trabajos = [];
+                snapshot.forEach(doc => trabajos.push({ id: doc.id, ...doc.data() }));
+                renderTrabajos();
+                actualizarStats();
+            });
+
+            // Escucha de clientes
+            unsubscribeClientes = getClientesRef().onSnapshot(snapshot => {
+                clientes = [];
+                snapshot.forEach(doc => clientes.push({ id: doc.id, ...doc.data() }));
+                renderClientes();
+                actualizarStats();
+            });
+        }
+
+        // ─── REGISTRO AUTOMÁTICO DE CLIENTE ────
+        async function actualizarCliente(nombre, telefono, fechaTrabajo) {
+            if (!nombre || !telefono) return;
+            const telefonoLimpio = telefono.replace(/\D/g, '');
+            if (!telefonoLimpio) return;
+            const clienteRef = getClientesRef().doc(telefonoLimpio);
+            // Usamos set con merge para no perder datos previos si ya existe
+            await clienteRef.set({
+                nombre,
+                telefono: telefonoLimpio,
+                ultimoTrabajo: fechaTrabajo || null
+            }, { merge: true });
+        }
+
+        // ─── CRUD TRABAJOS ─────────────────────
         async function guardarTrabajo(event) {
             event.preventDefault();
             const id = document.getElementById('trabajoId').value;
@@ -396,13 +369,13 @@
                 cliente: document.getElementById('cliente').value.trim(),
                 telefono: document.getElementById('telefono').value.trim(),
                 descripcion: document.getElementById('descripcion').value.trim(),
-                fechaTrabajo: document.getElementById('fechaTrabajo').value || null,  // ahora es datetime
+                fechaTrabajo: document.getElementById('fechaTrabajo').value || null,
                 estado: document.getElementById('estado').value,
                 fechaRecordatorio: document.getElementById('fechaRecordatorio').value || null,
                 notas: document.getElementById('notas').value.trim(),
             };
             if (!datos.cliente || !datos.telefono || !datos.descripcion || !datos.fechaTrabajo) {
-                mostrarToast('Completa los campos obligatorios (incluyendo fecha y hora)', 'warning');
+                mostrarToast('Completa todos los campos obligatorios', 'warning');
                 return;
             }
             try {
@@ -411,9 +384,14 @@
                     mostrarToast('Trabajo actualizado', 'success');
                     if (datos.fechaRecordatorio) recordatoriosNotificados.delete(id);
                 } else {
-                    await getTrabajosRef().add({ ...datos, fechaCreacion: firebase.firestore.FieldValue.serverTimestamp() });
+                    await getTrabajosRef().add({
+                        ...datos,
+                        fechaCreacion: firebase.firestore.FieldValue.serverTimestamp()
+                    });
                     mostrarToast('Trabajo creado', 'success');
                 }
+                // 🔥 Registrar/actualizar cliente automáticamente
+                await actualizarCliente(datos.cliente, datos.telefono, datos.fechaTrabajo);
                 cerrarModal();
             } catch (error) {
                 mostrarToast('Error: ' + error.message, 'warning');
@@ -427,6 +405,7 @@
                 await getTrabajosRef().doc(id).delete();
                 recordatoriosNotificados.delete(id);
                 mostrarToast('Eliminado', 'warning');
+                // No borramos el cliente de la lista, permanece
             }
         }
 
@@ -447,7 +426,6 @@
             document.getElementById('trabajoId').value = '';
             document.getElementById('fechaRecordatorio').value = '';
             document.getElementById('estado').value = 'pendiente';
-
             if (id) {
                 const t = trabajos.find(x => x.id === id);
                 if (t) {
@@ -456,7 +434,6 @@
                     document.getElementById('cliente').value = t.cliente;
                     document.getElementById('telefono').value = t.telefono;
                     document.getElementById('descripcion').value = t.descripcion;
-                    // Asignar datetime-local: si existe, usamos el valor; si no, dejamos vacío
                     document.getElementById('fechaTrabajo').value = t.fechaTrabajo || '';
                     document.getElementById('estado').value = t.estado;
                     document.getElementById('fechaRecordatorio').value = t.fechaRecordatorio || '';
@@ -464,14 +441,27 @@
                 }
             } else {
                 document.getElementById('modalTitulo').textContent = 'Nuevo Trabajo';
-                // Fecha y hora actual por defecto
                 document.getElementById('fechaTrabajo').value = new Date().toISOString().slice(0, 16);
             }
             document.getElementById('modalOverlay').classList.add('active');
         }
         function cerrarModal() { document.getElementById('modalOverlay').classList.remove('active'); }
 
-        // ─── RENDER Y FILTROS ────────────────
+        // ─── VISTAS (TRABAJOS / CLIENTES) ──────
+        function cambiarVista(vista) {
+            vistaActual = vista;
+            document.getElementById('vistaTrabajos').style.display = vista === 'trabajos' ? 'block' : 'none';
+            document.getElementById('vistaClientes').style.display = vista === 'clientes' ? 'block' : 'none';
+            // Botones de navegación
+            document.querySelectorAll('#navButtons .btn-nav').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.vista === vista) btn.classList.add('active');
+            });
+            if (vista === 'trabajos') renderTrabajos();
+            else renderClientes();
+        }
+
+        // ─── RENDER TRABAJOS ───────────────────
         function obtenerTrabajosFiltrados() {
             const busqueda = document.getElementById('searchInput').value.toLowerCase().trim();
             let filtrados = [...trabajos];
@@ -486,11 +476,11 @@
                     (t.telefono||'').includes(busqueda)
                 );
             }
-            // Ordenar por fecha y hora
             return filtrados.sort((a, b) => (a.fechaTrabajo || '').localeCompare(b.fechaTrabajo || ''));
         }
 
-        function renderTabla() {
+        function renderTrabajos() {
+            if (vistaActual !== 'trabajos') return;
             const tbody = document.getElementById('tablaBody');
             const filtrados = obtenerTrabajosFiltrados();
             if (filtrados.length === 0) {
@@ -514,24 +504,62 @@
                     </tr>
                 `).join('');
             }
-            actualizarStats();
+        }
+
+        function setFiltro(filtro, btn) {
+            filtroActual = filtro;
+            document.querySelectorAll('#vistaTrabajos .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderTrabajos();
+        }
+
+        // ─── RENDER CLIENTES ───────────────────
+        function obtenerClientesFiltrados() {
+            const busqueda = document.getElementById('searchClientesInput')?.value.toLowerCase().trim() || '';
+            let filtrados = [...clientes];
+            if (busqueda) {
+                filtrados = filtrados.filter(c =>
+                    (c.nombre||'').toLowerCase().includes(busqueda) ||
+                    (c.telefono||'').includes(busqueda)
+                );
+            }
+            return filtrados.sort((a,b) => (b.ultimoTrabajo || '').localeCompare(a.ultimoTrabajo || ''));
+        }
+
+        function renderClientes() {
+            if (vistaActual !== 'clientes') return;
+            const tbody = document.getElementById('clientesBody');
+            const filtrados = obtenerClientesFiltrados();
+            if (filtrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state"><i class="fas fa-users"></i><p>No hay clientes registrados</p></div></td></tr>`;
+            } else {
+                tbody.innerHTML = filtrados.map(c => `
+                    <tr>
+                        <td>${escapeHtml(c.nombre)}</td>
+                        <td>${escapeHtml(c.telefono)}</td>
+                        <td>${c.ultimoTrabajo ? formatearFechaHora(c.ultimoTrabajo) : '—'}</td>
+                        <td class="actions-cell">
+                            <button class="btn btn-whatsapp btn-xs" onclick="ofrecerServicios('${c.id}')"><i class="fab fa-whatsapp"></i> Ofrecer servicios</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
         }
 
         function actualizarStats() {
             document.getElementById('statTotal').textContent = trabajos.length;
             document.getElementById('statPendientes').textContent = trabajos.filter(t => t.estado !== 'completado').length;
             document.getElementById('statCompletados').textContent = trabajos.filter(t => t.estado === 'completado').length;
-            document.getElementById('statRecordatorios').textContent = trabajos.filter(t => t.fechaRecordatorio && t.estado !== 'completado').length;
+            document.getElementById('statClientes').textContent = clientes.length;
         }
 
-        function setFiltro(filtro, btn) {
-            filtroActual = filtro;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderTabla();
+        function renderTodo() {
+            renderTrabajos();
+            renderClientes();
+            actualizarStats();
         }
 
-        // ─── WHATSAPP ─────────────────────────
+        // ─── WHATSAPP TRABAJOS ─────────────────
         function enviarWhatsApp(id) {
             const t = trabajos.find(x => x.id === id);
             if (!t) return;
@@ -545,8 +573,27 @@
         function whatsappMasivo() {
             const pendientes = trabajos.filter(t => t.estado !== 'completado');
             if (!pendientes.length) { mostrarToast('Sin pendientes','info'); return; }
-            if (!confirm(`¿Enviar WhatsApp a ${pendientes.length} clientes?`)) return;
+            if (!confirm(`¿Enviar WhatsApp a ${pendientes.length} trabajos pendientes?`)) return;
             pendientes.forEach((t,i) => setTimeout(() => enviarWhatsApp(t.id), i*600));
+        }
+
+        // ─── WHATSAPP CLIENTES (SEGUIMIENTO) ──
+        function ofrecerServicios(telefonoLimpio) {
+            const cliente = clientes.find(c => c.id === telefonoLimpio);
+            if (!cliente) return;
+            const nombre = cliente.nombre || 'cliente';
+            const mensaje = `¡Hola *${nombre}*! 👋\n\nEsperamos que estés muy bien. Queremos recordarte que estamos a tu disposición para cualquier trabajo que necesites. Si tienes un nuevo proyecto, no dudes en contactarnos.\n\n¡Gracias por confiar en nosotros! 🙌`;
+            window.open(`https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            mostrarToast(`Oferta enviada a ${nombre}`, 'success');
+        }
+
+        function whatsappMasivoClientes() {
+            if (clientes.length === 0) { mostrarToast('No hay clientes registrados','info'); return; }
+            if (!confirm(`¿Enviar oferta de servicios a ${clientes.length} clientes?`)) return;
+            clientes.forEach((c, i) => {
+                setTimeout(() => ofrecerServicios(c.id), i * 600);
+            });
+            mostrarToast(`Enviando ofertas a ${clientes.length} clientes...`, 'info');
         }
 
         // ─── RECORDATORIOS ────────────────────
@@ -575,10 +622,11 @@
 
         // ─── EXPORTAR / IMPORTAR ──────────────
         function exportarDatos() {
-            const blob = new Blob([JSON.stringify(trabajos, null, 2)], {type:'application/json'});
+            const datos = { trabajos, clientes };
+            const blob = new Blob([JSON.stringify(datos, null, 2)], {type:'application/json'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `worktrack_${new Date().toISOString().slice(0,10)}.json`;
+            a.download = `worktrack_completo_${new Date().toISOString().slice(0,10)}.json`;
             a.click();
         }
 
@@ -590,16 +638,23 @@
             reader.onload = async function(e) {
                 try {
                     const datos = JSON.parse(e.target.result);
-                    if (!confirm(`¿Reemplazar tus trabajos con ${datos.length} registros?`)) return;
-                    const ref = getTrabajosRef();
+                    if (!datos.trabajos || !datos.clientes) throw new Error('Formato incorrecto');
+                    if (!confirm(`¿Reemplazar tus datos con ${datos.trabajos.length} trabajos y ${datos.clientes.length} clientes?`)) return;
+                    // Limpiar colecciones actuales
                     const batch = db.batch();
-                    (await ref.get()).forEach(doc => batch.delete(doc.ref));
+                    (await getTrabajosRef().get()).forEach(doc => batch.delete(doc.ref));
+                    (await getClientesRef().get()).forEach(doc => batch.delete(doc.ref));
                     await batch.commit();
-                    for (const item of datos) {
-                        const { id, ...data } = item;
-                        await ref.add(data);
+                    // Importar nuevos datos
+                    for (const t of datos.trabajos) {
+                        const { id, ...data } = t;
+                        await getTrabajosRef().add(data);
                     }
-                    mostrarToast('Importación exitosa', 'success');
+                    for (const c of datos.clientes) {
+                        const { id, ...data } = c;
+                        await getClientesRef().doc(id).set(data);
+                    }
+                    mostrarToast('Importación completa', 'success');
                 } catch { mostrarToast('Archivo no válido', 'warning'); }
             };
             reader.readAsText(file);
@@ -611,15 +666,8 @@
         function formatearFechaHora(valor) {
             if (!valor) return '—';
             const fecha = new Date(valor);
-            if (isNaN(fecha.getTime())) return valor; // Si no es fecha válida, devuelve el texto
-            return fecha.toLocaleDateString('es-MX', {
-                weekday: 'short',
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+            if (isNaN(fecha.getTime())) return valor;
+            return fecha.toLocaleDateString('es-MX', { weekday:'short', year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
         }
         function mostrarToast(msg, tipo='info') {
             const cont = document.getElementById('toastContainer');
@@ -630,15 +678,11 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Cerrar modal al hacer clic fuera
+        // Eventos
         document.getElementById('modalOverlay').addEventListener('click', function(e) { if(e.target===this) cerrarModal(); });
         document.addEventListener('keydown', e => { if(e.key==='Escape') cerrarModal(); });
-
-        // Verificar recordatorios periódicamente
         setInterval(verificarRecordatorios, 30000);
         setTimeout(verificarRecordatorios, 5000);
-
-        // Solicitar permiso de notificaciones
         if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
     </script>
 </body>
